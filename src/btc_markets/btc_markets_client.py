@@ -2,11 +2,8 @@ import base64
 import hashlib
 import hmac
 import time
-from typing import Any, Dict
 
-#from src.btc_markets.client_base import ClientBase
 from src.abstract.httpRequest.base_rest_api import BaseRestApi
-from src.btc_markets.data_types import RESTRequest, RESTMethod
 import src.btc_markets.btc_markets_constants as CONSTANTS
 
 
@@ -65,19 +62,6 @@ class BtcMarketsClient(BaseRestApi):
             params=params,
             header_meta=header_meta,
         )
-            
-    # def list_current_orders(self, **kwargs):
-    #     params = {}
-    #     if kwargs:
-    #         params.update(kwargs)
-    #     header_meta = {"path": "order/hist/current"}
-    #     account_category = "cash" if not params["account_category"] else params["account_category"]
-    #     return self._request(
-    #         "GET",
-    #         f"{self.group}/api/pro/v1/{account_category}/order/hist/current",
-    #         params=params,
-    #         header_meta=header_meta,
-    #     )
 
     def get_ticker(self, symbol, **kwargs):
         params = {}
@@ -92,12 +76,6 @@ class BtcMarketsClient(BaseRestApi):
         if kwargs:
             params.update(kwargs)
         return self._request("GET", CONSTANTS.MARKETS_URL, params=params, auth=False)
-
-    # def list_all_product(self, **kwargs):
-    #     params = {}
-    #     if kwargs:
-    #         params.update(kwargs)
-    #     return self._request("GET", "api/pro/v1/products", params=params, auth=False)
 
     def _headers(self, header_meta):
         now_time = self._timestamp_in_milliseconds()
@@ -137,92 +115,3 @@ class BtcMarketsClient(BaseRestApi):
 
     def _time(self):
         return time.time()
-
-    # async def rest_authenticate(self, request: RESTRequest) -> RESTRequest:
-    #     """
-    #     Adds the server time and the signature to the request, required for authenticated interactions. It also adds
-    #     the required parameter in the request header.
-    #     :param request: the request to be configured for authenticated interaction
-    #     """
-    #     now = self._timestamp_in_milliseconds()
-    #     sig = self.get_signature(
-    #         request.method.name,
-    #         self.get_path_from_url(request.url),
-    #         now,
-    #         request.data if request.method == RESTMethod.POST else {}
-    #     )
-
-    #     headers = self._generate_auth_headers(now, sig)
-    #     if request.headers is not None:
-    #         headers.update(request.headers)
-    #     request.headers = headers
-
-    #     return request
-
-    # def get_signature(
-    #     self,
-    #     method: str,
-    #     path_url: str,
-    #     nonce: int,
-    #     data: Dict[str, Any] = None
-    # ):
-    #     """
-    #     Generates authentication signature and return it in a dictionary along with other inputs
-    #     :return: a dictionary of request info including the request signature
-    #     """
-    #     data = data or {}
-
-    #     if data is None or data == {}:
-    #         payload = f"{method}/{path_url}{nonce}{''}"
-    #     else:
-    #         bjson = str(data)
-    #         payload = f"{method}/{path_url}{nonce}{bjson}"
-
-    #     return self._generate_signature(payload)
-
-    # def _generate_auth_headers(self, nonce: int, sig: str):
-    #     """
-    #     Generates HTTP headers
-    #     """
-    #     headers = {
-    #         "Accept": "application/json",
-    #         "Accept-Charset": "UTF-8",
-    #         "Content-Type": "application/json",
-    #         "BM-AUTH-APIKEY": self.api_key,
-    #         "BM-AUTH-TIMESTAMP": str(nonce),
-    #         "BM-AUTH-SIGNATURE": sig
-    #     }
-
-    #     return headers
-
-    # def _generate_signature(self, payload: str) -> str:
-    #     """
-    #     Generates a presigned signature
-    #     :return: a signature of auth params
-    #     """
-    #     digest = base64.b64encode(hmac.new(
-    #         base64.b64decode(self.secret_key), payload.encode("utf8"), digestmod=hashlib.sha512).digest())
-    #     return digest.decode('utf8')
-    
-    # async def _api_get(self, *args, **kwargs):
-    #     kwargs["method"] = RESTMethod.GET
-    #     return await self._api_request(*args, **kwargs)
-    
-    # async def get_my_trades(self, symbol, startTime):
-    #     trades_info = await self._api_get(
-    #         method=RESTMethod.Get,
-    #         path_url=CONSTANTS.TRADES_URL,
-    #         params={
-    #             "marketId": symbol
-    #         },
-    #         is_auth_required=True,
-    #         limit_id=CONSTANTS.TRADES_URL
-    #     )
-
-    #     return trades_info
-
-    # def _timestamp_in_milliseconds(self) -> int:
-    #     return int(self._time() * 1e3)
-
-    # def _time(self):
-    #     return time.time()
