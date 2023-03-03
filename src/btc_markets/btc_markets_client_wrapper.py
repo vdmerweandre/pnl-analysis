@@ -1,7 +1,7 @@
 import time
 
 import pandas as pd
-import datetime as dt
+from datetime import datetime as dt
 
 from src.btc_markets.btc_markets_client import BtcMarketsClient
 from src.abstract.exchange_client_wrapper import ExchangeClientWrapper
@@ -65,33 +65,31 @@ class BTCMarketsClientWrapper(ExchangeClientWrapper):
     def get_trades(self, symbol, start_date, end_date=round(time.time() * 1000)):
         df_trades = pd.DataFrame()
         pd.set_option('max_columns', None)
+        start_date = round(start_date / 1000)
+        end_date = round(end_date / 1000)
+        #while start_date <= end_date:
         if start_date <= end_date:
             print(f"start:{start_date} end:{end_date}")
             try:
-                df_res = pd.DataFrame(self.client.get_my_trades(symbol=symbol, startTime=start_date))
-                
-                df_res["timestamp"] = pd.to_datetime(df_res["timestamp"], format="%Y-%m-%dT%H:%M:%S.%f000Z")
-                #df_res["timestamp"] = pd.to_numeric(df_res["timestamp"])
-                #df_res["timestamp"] = df_res.apply(pd.to_numeric)
-                df_res["timestamp"] = (df_res['timestamp'] - dt.datetime(1970,1,1)).dt.total_seconds().multiply(1000).round()
-                start = df_res.iloc[-1]["timestamp"]#float(dateparse(df_res.iloc[-1]["timestamp"]).timestamp())
-                # if len(df_res) == 0 or df_res.empty:
-                #     break
-                # elif len(df_trades) == 0:
-                #     start_date = start + 1000
-                #     df_trades = df_res[df_res["timestamp"] <= end_date].sort_values(
-                #         "timestamp", ascending=False, ignore_index=True
-                #     )
-                # else:
-                #     start_date = start + 1000
-                #     df_res = df_res[df_res["timestamp"] <= end_date].sort_values(
-                #         "timestamp", ascending=False, ignore_index=True
-                #     )
-                #     df_trades = pd.concat([df_res, df_trades])
-                df_res = df_res[df_res["timestamp"] <= end_date].sort_values(
-                        "timestamp", ascending=False, ignore_index=True
-                    )
-                df_trades = pd.concat([df_res, df_trades])
+                trades = self.client.get_my_trades(symbol=symbol, startTime=start_date)
+
+                print(f"trades {trades}")
+
+                for trade in trades:
+                    dt_object = dt.strptime(trade["timestamp"], "%Y-%m-%dT%H:%M:%S.%f000Z")
+                    trade["timestamp"] = dt.timestamp(dt_object) #round(float(trade["timestamp"].strptime("%Y-%m-%dT%H:%M:%S.%f000Z")))
+            
+                df_res = pd.DataFrame(trades)
+
+                #if len(df_res) == 0:
+                #    break
+                if len(df_trades) == 0:
+                    start_date = int(df_res.iloc[0]["timestamp"]) + 1
+                    df_trades = df_res[df_res["timestamp"] <= end_date]
+                else:
+                    start_date = int(df_res.iloc[0]["timestamp"]) + 1
+                    df_res = df_res[df_res["timestamp"] <= end_date]
+                    df_trades = df_res.append(df_trades, ignore_index=True)
             except Exception as err:
                 if err.code == -1003:
                     print("exceed limit rate sleep for 1min 💤")

@@ -40,7 +40,7 @@ class BtcMarketsClient(BaseRestApi):
             raise Exception(response_data.status_code, response_data.text)
 
     def get_my_trades(self, symbol, startTime, **kwargs):
-        params = {"marketId": symbol, "limit": 100}
+        params = {"marketId": symbol, "limit": 200}
         if kwargs:
             params.update(kwargs)
         header_meta = {"path": f"{CONSTANTS.TRADES_URL}"}
