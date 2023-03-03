@@ -1,3 +1,9 @@
+# Origin
+Forked from https://github.com/CoinAlpha/pnl-analysis 
+
+Please email [carlo@hummingbot.io](mailto:carlol@hummingbot.io?subject=Colab:%20Performance%20Sheet).
+Please email [amine@hummingbot.io](mailto:amine@hummingbot.io?subject=Colab:%20Performance%20Sheet).
+
 # Trading Performance
 
 This notebook retrieves your trade data from Binance to calculate the pnl from your trading.
@@ -47,6 +53,7 @@ Step 3) click start
 ## Notes
 
 -   `% gain and loss` is based on your current balance of base and quote asset. This may not be a comprehensive figure if (1) you have made deposits/withdrawals within the period being analyzed, and (2) if you are trading multiple pairs with overlapping base and quote assets
+- Only fiat quote assets trading pairs are currently supported by `btc_markets` connector
 
 ## Supported Exchanges:
 
@@ -54,8 +61,8 @@ Step 3) click start
 -   kucoin ✅
 -   ascendex ✅
 -   gate_io ✅
+-   btc_markets ✅
 
 ## Comments / bugs / suggestions
 
-Please email [carlo@hummingbot.io](mailto:carlol@hummingbot.io?subject=Colab:%20Performance%20Sheet).
-Please email [amine@hummingbot.io](mailto:amine@hummingbot.io?subject=Colab:%20Performance%20Sheet).
+Please email [vdmerwe.andre@gmail.com](mailto:vdmerwe.andre@gmail.com?subject=pnlCalculation).
