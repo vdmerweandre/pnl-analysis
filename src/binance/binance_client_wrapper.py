@@ -51,7 +51,7 @@ class BinanceClientWrapper(ExchangeClientWrapper):
         while start_date <= end_date:
             try:
                 df_res = pd.DataFrame(self.client.get_my_trades(symbol=symbol, startTime=start_date))
-                if len(df_res) == 0:
+                if len(df_res) == 0 or df_res.empty:
                     break
                 elif len(df_trades) == 0:
                     start_date = df_res.iloc[-1]["time"] + 1
@@ -76,8 +76,10 @@ class BinanceClientWrapper(ExchangeClientWrapper):
         return self.format_data(df_trades)
 
     def format_data(self, df):
-        df.loc[(not df["isBuyer"]), "side"] = "sell"
-        df.loc[(df["isBuyer"]), "side"] = "buy"
+        print(df)
+        print(df["isBuyer"])
+        df.rename(columns={"isBuyer": "side"}, inplace=True)
+        
         fee_currencies = df["commissionAsset"].unique()
         for f in fee_currencies:
             df.loc[(df["commissionAsset"] == f), "commissionAssetUsdPrice"] = self.usd_price_for(f)

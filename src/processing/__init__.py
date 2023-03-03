@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def pnl_calculate(df, current_balance, meta):
-    total_balance_usd = current_balance["usd_value"].sum()
+    total_balance_usd = current_balance["quote_value"].sum()
     base_asset = meta["base_asset"]
     quote_asset = meta["quote_asset"]
     base_asset_price = meta["base_asset_price"]
@@ -39,13 +39,13 @@ def pnl_calculate(df, current_balance, meta):
         ["Disposed", base_sells, quote_spent, "-"],
         ["Delta", base_delta, quote_delta, "-"],
         [
-            "Delta (usd)",
+            "Delta (quote)",
             base_delta_usd,
             quote_delta_usd,
             base_delta_usd + quote_delta_usd,
         ],
-        ["Trading fees (usd value)", "-", "-", -total_fees_usd],
-        ["Net pnl (USD)", "-", "-", net_pnl],
+        ["Trading fees (quote value)", "-", "-", -total_fees_usd],
+        ["Net pnl (Quote)", "-", "-", net_pnl],
         ["% gain/loss", "-", "-", f"{net_pnl / (total_balance_usd - net_pnl):.1%}"],
     ]
 
@@ -60,7 +60,7 @@ def pnl_calculate(df, current_balance, meta):
         "- sells": f"{num_sells} / {num_sells/num_trades:.1%}",
         "total base traded": f"{df['qty'].sum():,.0f}",
         "total quote traded": f"{df['quoteQty'].sum():,.0f}",
-        "approx. usd volume": f"${df['qty'].sum() * base_asset_price:,.0f}",
+        "approx. quote volume": f"${df['qty'].sum() * base_asset_price:,.0f}",
     }
 
     return summary, df_summary_table, total_fees_usd, df_commissions

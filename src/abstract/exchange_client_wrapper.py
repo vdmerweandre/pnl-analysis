@@ -25,7 +25,7 @@ class ExchangeClientWrapper(ABC):
         df = pd.DataFrame(columns=["asset"], data=[base_asset, quote_asset])
         df["price"] = df["asset"].apply(lambda x: self.usd_price_for(x))
         df["balance"] = df["asset"].apply(lambda x: self.get_asset_balance(x))
-        df["usd_value"] = df["price"] * df["balance"]
+        df["quote_value"] = df["price"] * df["balance"]
         df.set_index("asset", inplace=True, drop=True)
         base_asset_price = df.at[base_asset, "price"]
         quote_asset_price = df.at[quote_asset, "price"]
